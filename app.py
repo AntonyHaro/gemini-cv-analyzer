@@ -1,14 +1,41 @@
-from dotenv import load_dotenv
+from flask import Flask, request, jsonify, render_template
 import os
+import time
 import google.generativeai as genai
+from dotenv import load_dotenv
 
-# Carregar as variáveis de ambiente do arquivo .env
+# Configuração inicial
 load_dotenv()
-
-# Configurar a chave de API
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
-# Configuração do modelo (você pode ajustar conforme necessário)
+# Inicialização do Flask
+app = Flask(__name__)
+
+
+# Função para upload de arquivos no Gemini
+def upload_to_gemini(path, mime_type=None):
+    """Envia o arquivo para o Gemini."""
+    file = genai.upload_file(path, mime_type=mime_type)
+    print(f"Arquivo enviado: '{file.display_name}' como: {file.uri}")
+    return file
+
+
+# Função para esperar que os arquivos estejam ativos
+def wait_for_files_active(files):
+    """Aguarda o processamento dos arquivos enviados para o Gemini."""
+    print("Aguardando processamento dos arquivos...")
+    for name in (file.name for file in files):
+        file = genai.get_file(name)
+        while file.state.name == "PROCESSING":
+            print(".", end="", flush=True)
+            time.sleep(10)
+            file = genai.get_file(name)
+        if file.state.name != "ACTIVE":
+            raise Exception(f"O arquivo {file.name} falhou no processamento.")
+    print("...todos os arquivos estão prontos.")
+
+
+# Configuração do modelo
 generation_config = {
     "temperature": 1,
     "top_p": 0.95,
@@ -17,15 +44,62 @@ generation_config = {
     "response_mime_type": "text/plain",
 }
 
-# Inicializar o modelo com a configuração
 model = genai.GenerativeModel(
-    model_name="gemini-1.5-flash",  # Nome do modelo
+    model_name="gemini-1.5-flash",
     generation_config=generation_config,
 )
 
-response = model.generate_content(
-    "Olá! Eu consigo te mandar arquivos por aqui? estou utilizando a api gemini-1.5-flash"
-)
-resposta = response.text
 
-print(resposta)
+@app.route("/", methods=["GET"])
+def index():
+    return render_template("index.html")  # Página HTML para upload do PDF
+
+
+@app.route("/upload", methods=["POST"])
+def upload():
+    if "file" not in request.files:
+        return jsonify({"error": "Nenhum arquivo enviado."}), 400
+
+    file = request.files["file"]
+    if file.filename == "":
+        return jsonify({"error": "Nenhum arquivo selecionado."}), 400
+
+    if not file.filename.endswith(".pdf"):
+        return jsonify({"error": "Somente arquivos PDF são suportados."}), 400
+
+    # Salvar o arquivo localmente
+    file_path = os.path.join("uploads", file.filename)
+    os.makedirs("uploads", exist_ok=True)
+    file.save(file_path)
+
+    try:
+        # Enviar para o Gemini
+        gemini_file = upload_to_gemini(file_path, mime_type="application/pdf")
+
+        # Esperar que o arquivo esteja ativo
+        wait_for_files_active([gemini_file])
+
+        # Iniciar a sessão de chat com o arquivo
+        chat_session = model.start_chat(
+            history=[
+                {
+                    "role": "user",
+                    "parts": [
+                        gemini_file,
+                    ],
+                },
+            ]
+        )
+
+        # Enviar uma mensagem ao modelo
+        response = chat_session.send_message("O que diz este arquivo?")
+
+        # Retornar a resposta
+        return jsonify({"response": response.text})
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
