@@ -7,9 +7,17 @@
     </head>
     <body>
         <h1>Enviar PDF para Análise</h1>
-        <form action="/upload" method="post" enctype="multipart/form-data">
+        <!-- <form action="/upload" method="post" enctype="multipart/form-data">
             <input type="file" name="file" accept=".pdf" required />
             <button type="submit">Enviar</button>
-        </form>
+        </form> -->
+        <div>
+            <input type="file" id="file-input" />
+            <button id="upload-button">Enviar PDF</button>
+        </div>
+        <div id="output"></div>
+
+        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+        <script src="../static/script.js"></script>
     </body>
 </html>

@@ -4,11 +4,9 @@ import time
 import google.generativeai as genai
 from dotenv import load_dotenv
 
-# Configuração inicial
 load_dotenv()
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
-# Inicialização do Flask
 app = Flask(__name__)
 
 
@@ -92,10 +90,14 @@ def upload():
         )
 
         # Enviar uma mensagem ao modelo
-        response = chat_session.send_message("O que diz este arquivo?")
+        response = chat_session.send_message(
+            "Faça um resumo detalhado sobre este currículo. Devolva sua resposta no formato markdown."
+        )
 
-        # Retornar a resposta
         return jsonify({"response": response.text})
+        # aqui pode ser reaproveitado diretamente como api, não se fazendo necessário renderizar nenhum template
+        # apenas será necessário conectar isso ao javascript para consumir o endpoint
+        # dentro do frontend, colocar alguma biblioteca que renderize a resposta do gemini para formato markdown
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -103,3 +105,4 @@ def upload():
 
 if __name__ == "__main__":
     app.run(debug=True)
+    # em prod, o app.run deve receber o host e a porta (pesquisar como fazer isso em um servidor ubuntu)

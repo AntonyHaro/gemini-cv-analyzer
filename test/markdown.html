@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Markdown to HTML with Showdown</title>
+    <script src="https://cdn.jsdelivr.net/npm/showdown@2.1.0/dist/showdown.min.js"></script>
+</head>
+<body>
+    <textarea id="markdown" rows="10" cols="50">
+# Título
+- Item 1
+- Item 2
+    </textarea>
+    <button onclick="convert()">Renderizar</button>
+    <div id="htmlOutput"></div>
+
+    <script>
+        function convert() {
+            const markdownText = document.getElementById('markdown').value;
+            
+            // Criar o conversor Showdown
+            const converter = new showdown.Converter();
+            
+            // Converter Markdown para HTML
+            const htmlOutput = converter.makeHtml(markdownText);
+            
+            // Inserir o HTML gerado no div
+            document.getElementById('htmlOutput').innerHTML = htmlOutput;
+        }
+    </script>
+</body>
+</html>
