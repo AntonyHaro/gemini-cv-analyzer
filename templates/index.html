@@ -3,21 +3,37 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Upload PDF</title>
+        <title>Analisador de Currículos</title>
+        <script src="https://cdn.jsdelivr.net/npm/showdown@2.1.0/dist/showdown.min.js"></script>
+        <script src="../static/script.js" defer></script>
+        <link rel="stylesheet" href="../static/styles.css" />
+        <link rel="stylesheet" href="../static/markdown.css" />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+            integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+        />
     </head>
     <body>
-        <h1>Enviar PDF para Análise</h1>
-        <!-- <form action="/upload" method="post" enctype="multipart/form-data">
-            <input type="file" name="file" accept=".pdf" required />
-            <button type="submit">Enviar</button>
-        </form> -->
-        <div>
-            <input type="file" id="file-input" />
-            <button id="upload-button">Enviar PDF</button>
-        </div>
-        <div id="output"></div>
-
-        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-        <script src="../static/script.js"></script>
+        <header>
+            <i class="fa-solid fa-person"></i>
+            <h1>Analisador de Currículos</h1>
+        </header>
+        <main>
+            <form id="upload-form">
+                <p>
+                    Selecione o arquivo .pdf do currículo que desejar e receba
+                    uma analise robusta e crítica.
+                </p>
+                <input type="file" id="file-input" />
+                <button id="upload-button">
+                    Analisar <i class="fa-regular fa-lightbulb"></i>
+                </button>
+            </form>
+            <p id="loader">Carregando análise...</p>
+            <div id="output"></div>
+        </main>
     </body>
 </html>

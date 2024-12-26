@@ -91,13 +91,21 @@ def upload():
 
         # Enviar uma mensagem ao modelo
         response = chat_session.send_message(
-            "Faça um resumo detalhado sobre este currículo. Devolva sua resposta no formato markdown."
+            """
+            **INSTRUÇÕES IMPORTANTES!**
+            - Você é um analisador de currículos;
+            - Use o bom senso e as melhores práticas críticas para fazer a análise do currículo;
+            - Seja claro e conciso nas suas palavras;
+            - Determine pontos chave, críticos, positivos, negativos e que podem melhorar a respeito do currículo e do próprio canditado;
+            - Em hipótese alguma forneça os cabeçalhos genéricos do tipo: 'Claro, está aqui a análise...', não transpareça nenhum tipo de traço que é um chatbot, apenas gere o que foi pedido;
+            - Seja crítico e detalhista;
+            - Forneça uma análise detalhada e em formato markdown com os tópicos devidamente separados.
+
+            Conforme as instruções acima, gere uma análise crítica robusta, longa e detalhada do currículo anexado.
+            """
         )
 
         return jsonify({"response": response.text})
-        # aqui pode ser reaproveitado diretamente como api, não se fazendo necessário renderizar nenhum template
-        # apenas será necessário conectar isso ao javascript para consumir o endpoint
-        # dentro do frontend, colocar alguma biblioteca que renderize a resposta do gemini para formato markdown
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
