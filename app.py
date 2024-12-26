@@ -113,4 +113,5 @@ def upload():
 
 if __name__ == "__main__":
     app.run(debug=True)
+    # app.run(debug=True, host="0.0.0.0", port=9999)
     # em prod, o app.run deve receber o host e a porta (pesquisar como fazer isso em um servidor ubuntu)

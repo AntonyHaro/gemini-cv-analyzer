@@ -2,6 +2,7 @@
 
 :root {
     --text: hsl(210, 5%, 20%);
+    --highlight: hsl(210, 100%, 50%);
 }
 
 * {
@@ -12,39 +13,94 @@
 }
 
 body {
-    padding: 2rem;
+    padding: 4rem;
     color: var(--text);
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 2rem;
 }
 
 header {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
+    gap: 0.7rem;
+    color: black;
+}
+
+header .img {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    border: 2px solid var(--highlight);
+    display: grid;
+    place-items: center;
 }
 
 header i {
-    font-size: 1.5em;
-    padding: 0.4rem 0.65rem;
-    border-radius: 50%;
-    background-color: lightgray;
+    font-size: 1.2em;
+    color: var(--highlight);
+    /* background-color: lightgray; */
 }
 
 main {
     display: grid;
-    gap: 1rem;
+    place-items: center;
+    gap: 3rem;
 }
 
 form {
+    width: fit-content;
+    display: grid;
+    gap: 1.4rem;
+    border: 1px solid lightgray;
+    border-radius: 6px;
+    padding: 1.3rem;
+    transition: 0.2s ease-out;
+}
+
+form:hover {
+    border-color: rgb(179, 179, 179);
+}
+
+form p {
+    color: gray;
+    margin-bottom: 3%;
+}
+
+.input-container {
     display: grid;
     gap: 1rem;
 }
 
+input {
+    border: 2px dashed lightgray;
+    padding: 2rem;
+    border-radius: 4px;
+}
+
 form button {
+    color: gray;
+    border: 1px solid gray;
+    background-color: white;
+    border-radius: 5px;
+    font-size: 1em;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
     width: fit-content;
     padding: 0.3rem 1rem;
+    transition: 0.2s;
+}
+
+form button:hover {
+    cursor: pointer;
+    color: var(--highlight);
+    border-color: var(--highlight);
+}
+
+form button i {
+    font-size: 0.9em;
 }
 
 #loader {
@@ -65,4 +121,3 @@ form button {
         color: lightgray;
     }
 }
-
